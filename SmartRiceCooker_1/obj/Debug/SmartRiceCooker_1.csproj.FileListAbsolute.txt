@@ -1,1 +1,6 @@
 C:\Users\das_laptop\Documents\Visual Studio 2015\Projects\SmartRiceCooker\SmartRiceCooker_1\bin\Debug\SmartRiceCooker_1.exe.config
+C:\Users\das_laptop\Documents\Visual Studio 2015\Projects\SmartRiceCooker\SmartRiceCooker_1\bin\Debug\SmartRiceCooker_1.exe
+C:\Users\das_laptop\Documents\Visual Studio 2015\Projects\SmartRiceCooker\SmartRiceCooker_1\bin\Debug\SmartRiceCooker_1.pdb
+C:\Users\das_laptop\Documents\Visual Studio 2015\Projects\SmartRiceCooker\SmartRiceCooker_1\obj\Debug\SmartRiceCooker_1.csprojResolveAssemblyReference.cache
+C:\Users\das_laptop\Documents\Visual Studio 2015\Projects\SmartRiceCooker\SmartRiceCooker_1\obj\Debug\SmartRiceCooker_1.exe
+C:\Users\das_laptop\Documents\Visual Studio 2015\Projects\SmartRiceCooker\SmartRiceCooker_1\obj\Debug\SmartRiceCooker_1.pdb
