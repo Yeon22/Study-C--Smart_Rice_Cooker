@@ -50,6 +50,237 @@ namespace SmartRiceCooker_2
 
     class Program
     {
+        public static int MainMenuIndex = 0; // 메인 메뉴 선택 인덱스
+
+        // Note: 밥솥 출력 메소드
+        static void RiceCookerBox(int x, int y)
+        {
+            int height = 20;
+
+            Console.SetCursorPosition(x, y);
+            Console.Write("┌──────────────────────┐");
+            for (int i = 1; i < height; i++)
+            {
+                Console.SetCursorPosition(x, y + i);
+                Console.Write("│                                            │");
+            }
+
+            Console.SetCursorPosition(x, y + height);
+            Console.Write("└──────────────────────┘");
+        }
+
+        // Note: 쌀통과 물통 출력 메소드
+        static void RiceorWaterBox(int x, int y)
+        {
+            int height = 20;
+
+            Console.SetCursorPosition(x, y);
+            Console.Write("┌──────────┐");
+            for (int i = 1; i < height; i++)
+            {
+                Console.SetCursorPosition(x, y + i);
+                Console.Write("│                    │");
+            }
+
+            Console.SetCursorPosition(x, y + height);
+            Console.Write("└──────────┘");
+        }
+
+        // Note: 쌀 출력 메소드
+        static void RiceHeight(int x, int y, int Amount)
+        {
+            int Height = Amount / 1000;
+            // 지우는 부분
+            Console.BackgroundColor = ConsoleColor.Black;
+            for (int i = 0; i < 18; i++)
+            {
+                Console.SetCursorPosition(x, 2 + i);
+                Console.Write("                    ");
+            }
+
+            for (int i = 0; i < Height; i++)
+            {
+                Console.SetCursorPosition(x, 19 - i);
+                Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+            }
+        }
+
+        // Note: 물 출력 메소드
+        static void WaterHeight(int x, int y, int Amount)
+        {
+            int Height = Amount / 1000;
+            // 지우는 부분
+            Console.BackgroundColor = ConsoleColor.Black;
+            for (int i = 0; i < 18; i++)
+            {
+                Console.SetCursorPosition(x, 2 + i);
+                Console.Write("                    ");
+            }
+
+            Console.BackgroundColor = ConsoleColor.Blue;
+            for (int i = 0; i < Height; i++)
+            {
+                Console.SetCursorPosition(x, 19 - i);
+                Console.Write("                    ");
+            }
+
+            Console.BackgroundColor = ConsoleColor.Black;
+        }
+
+        // Note: 밥솥 상태 정보 박스와 메뉴 박스 출력 메소드
+        static void InfoOrMenuBox(int x, int y)
+        {
+            int height = 13;
+            Console.SetCursorPosition(x, y);
+            Console.Write("┌──────────────────────┐");
+            for (int i = 1; i < height; i++)
+            {
+                Console.SetCursorPosition(x, y + i);
+                Console.Write("│                                            │");
+            }
+
+            Console.SetCursorPosition(x, y + height);
+            Console.Write("└──────────────────────┘");
+        }
+
+        // Note: 뚜껑 열기 닫기 출력 메소드
+        static void Cover(bool bOpen)
+        {
+            const int x = 16;
+            if (bOpen)
+            {
+                Console.SetCursorPosition(x, 3);
+                Console.Write("┌┐");
+                for (int i = 0; i < 6; i++)
+                {
+                    Console.SetCursorPosition(x, 4 + i);
+                    Console.Write("││");
+                }
+                Console.SetCursorPosition(x, 10);
+                Console.Write("└┘");
+            }
+            else
+            {
+                Console.SetCursorPosition(x, 9);
+                Console.Write("┌──────────┐");
+                Console.SetCursorPosition(x, 10);
+                Console.Write("└──────────┘");
+            }
+        }
+
+        // Note: 밥솥 출력 메소드
+        static void RiceBox(int x, int y)
+        {
+            int height = 7;
+            Console.SetCursorPosition(x, y);
+            Console.Write("┌──────────┐");
+            for (int i = 1; i < height; i++)
+            {
+                Console.SetCursorPosition(x, y + i);
+                Console.Write("│                    │");
+            }
+
+            Console.SetCursorPosition(x, y + height);
+            Console.Write("└──────────┘");
+            Console.SetCursorPosition(x + 10, y + 2);
+            Console.Write("밥솥");
+            Console.SetCursorPosition(x, y + 6);
+            Console.Write("┤"); // 전원 부분
+        }
+
+        static void RiceInfo(RiceCookerInfo Info)
+        {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.SetCursorPosition(3, 25);
+            if (Info.Power)
+                Console.Write("전원 상태 : ON");
+            else
+                Console.Write("전원 상태 : OFF");
+
+            Console.SetCursorPosition(3, 26);
+            if (Info.CoverOpenClose)
+                Console.Write("뚜껑 상태 : 열림");
+            else
+                Console.Write("뚜껑 상태 : 닫힘");
+
+            Console.SetCursorPosition(3, 27);
+            switch (Info.State)
+            {
+                case CookerProcess.None:
+                    Console.Write("밥솥 상태 : 대기 중  ");
+                    break;
+                case CookerProcess.Riceing:
+                    Console.Write("밥솥 상태 : 밥 넣기  ");
+                    break;
+                case CookerProcess.Watering:
+                    Console.Write("밥솥 상태 : 물 넣기  ");
+                    break;
+                case CookerProcess.Washing:
+                    Console.Write("밥솥 상태 : 쌀 씻기  ");
+                    break;
+                case CookerProcess.Droping:
+                    Console.Write("밥솥 상태 : 물 배수  ");
+                    break;
+                case CookerProcess.Cooking:
+                    Console.Write("밥솥 상태 : 취사 중  ");
+                    break;
+                case CookerProcess.Completion:
+                    Console.Write("밥솥 상태 : 취사 완료  ");
+                    break;
+                case CookerProcess.Keeping:
+                    Console.Write("밥솥 상태 : 보온 중  ");
+                    break;
+            }
+
+            Console.SetCursorPosition(3, 28);
+            Console.Write("인원수 : {0}", Info.Number);
+            Console.SetCursorPosition(3, 29);
+            Console.Write("쌀 상태 : {0:f1} Kg", Info.Rice / 1000.0f);
+            Console.SetCursorPosition(3, 30);
+            Console.Write("물 상태 : {0:f1} 리터", Info.Water / 1000.0f);
+        }
+
+        static void MessageBox(int x, int y, string Message)
+        {
+            int height = 3;
+            Console.SetCursorPosition(x, y);
+            Console.Write("┌───────────────────┐");
+            for (int i = 1; i < height; i++)
+            {
+                Console.SetCursorPosition(x, y + i);
+                Console.Write("│                                      │");
+            }
+
+            Console.SetCursorPosition(x, y + height);
+            Console.Write("└───────────────────┘");
+            Console.SetCursorPosition(x + 2, y + 1);
+            Console.Write(Message);
+        }
+
+        static void OutFrame()
+        {
+            RiceCookerBox(0, 0);
+            RiceorWaterBox(48, 0);
+            RiceorWaterBox(72, 0);
+            InfoOrMenuBox(0, 21);
+            InfoOrMenuBox(48, 21);
+            Console.SetCursorPosition(17, 1);
+            Console.Write("Smart 밥솥");
+            Console.SetCursorPosition(58, 1);
+            Console.Write("쌀통");
+            Console.SetCursorPosition(82, 1);
+            Console.Write("물통");
+            Console.SetCursorPosition(18, 23);
+            Console.Write("밥솥 정보");
+            Console.SetCursorPosition(66, 23);
+            Console.Write("(( 메뉴 ))");
+        }
+
+        static void Menu(int x, int y, string[] MenuItem)
+        {
+
+        }
+
         static void Main(string[] args)
         {
 
