@@ -367,10 +367,12 @@ namespace SmartRiceCooker_2
                         if (RCInfo.Power)
                         {
                             // Sound.SoundLocation = "power_on.wav";
+                            MessageBox(51, 27, "전원이 켜졌습니다.");
                         }
                         else
                         {
                             // Sound.SoundLocation = "power_off.wav";
+                            MessageBox(51, 27, "전원이 꺼졌습니다.");
                         }
                         // Sound.Load();
                         // Sound.PlaySync();
@@ -387,12 +389,12 @@ namespace SmartRiceCooker_2
                             RCInfo.CoverOpenClose = !RCInfo.CoverOpenClose;
                             if (RCInfo.CoverOpenClose)
                                 // Sound.SoundLocation = "cover_open.wav";
-                                Console.Write("뚜껑이 열렸습니다.");
+                                MessageBox(51, 27, "뚜껑이 열렸습니다.");
                             else
                                 // Sound.SoundLocation = "cover_close.wav";
                                 // Sound.Load();
                                 // Sound.Play();
-                                Console.Write("뚜껑이 닫혔습니다.");
+                                MessageBox(51, 27, "뚜껑이 닫혔습니다.");
 
                         }
                         break;
