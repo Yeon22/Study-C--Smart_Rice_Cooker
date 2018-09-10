@@ -58,7 +58,7 @@ namespace SmartRiceCooker_2
             int height = 20;
 
             Console.SetCursorPosition(x, y);
-            Console.Write("┌──────────────────────┐");
+            Console.Write("┌────────────────────────────────────────────┐");
             for (int i = 1; i < height; i++)
             {
                 Console.SetCursorPosition(x, y + i);
@@ -66,7 +66,7 @@ namespace SmartRiceCooker_2
             }
 
             Console.SetCursorPosition(x, y + height);
-            Console.Write("└──────────────────────┘");
+            Console.Write("└────────────────────────────────────────────┘");
         }
 
         // Note: 쌀통과 물통 출력 메소드
@@ -75,15 +75,15 @@ namespace SmartRiceCooker_2
             int height = 20;
 
             Console.SetCursorPosition(x, y);
-            Console.Write("┌──────────┐");
+            Console.Write("┌─────────────────────┐");
             for (int i = 1; i < height; i++)
             {
                 Console.SetCursorPosition(x, y + i);
-                Console.Write("│                    │");
+                Console.Write("│                     │");
             }
 
             Console.SetCursorPosition(x, y + height);
-            Console.Write("└──────────┘");
+            Console.Write("└─────────────────────┘");
         }
 
         // Note: 쌀 출력 메소드
@@ -132,7 +132,7 @@ namespace SmartRiceCooker_2
         {
             int height = 13;
             Console.SetCursorPosition(x, y);
-            Console.Write("┌──────────────────────┐");
+            Console.Write("┌────────────────────────────────────────────┐");
             for (int i = 1; i < height; i++)
             {
                 Console.SetCursorPosition(x, y + i);
@@ -140,7 +140,7 @@ namespace SmartRiceCooker_2
             }
 
             Console.SetCursorPosition(x, y + height);
-            Console.Write("└──────────────────────┘");
+            Console.Write("└────────────────────────────────────────────┘");
         }
 
         // Note: 뚜껑 열기 닫기 출력 메소드
@@ -162,9 +162,9 @@ namespace SmartRiceCooker_2
             else
             {
                 Console.SetCursorPosition(x, 9);
-                Console.Write("┌──────────┐");
+                Console.Write("┌────────────────────┐");
                 Console.SetCursorPosition(x, 10);
-                Console.Write("└──────────┘");
+                Console.Write("└────────────────────┘");
             }
         }
 
@@ -173,7 +173,7 @@ namespace SmartRiceCooker_2
         {
             int height = 7;
             Console.SetCursorPosition(x, y);
-            Console.Write("┌──────────┐");
+            Console.Write("┌────────────────────┐");
             for (int i = 1; i < height; i++)
             {
                 Console.SetCursorPosition(x, y + i);
@@ -181,7 +181,7 @@ namespace SmartRiceCooker_2
             }
 
             Console.SetCursorPosition(x, y + height);
-            Console.Write("└──────────┘");
+            Console.Write("└────────────────────┘");
             Console.SetCursorPosition(x + 10, y + 2);
             Console.Write("밥솥");
             Console.SetCursorPosition(x, y + 6);
@@ -278,12 +278,450 @@ namespace SmartRiceCooker_2
 
         static void Menu(int x, int y, string[] MenuItem)
         {
+            ConsoleKeyInfo InputKey;
 
+            while (true)
+            {
+                for(int i = 0; i < MenuItem.Length; i++)
+                {
+                    if(MainMenuIndex == i)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Yellow;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(x, y + i);
+                        Console.Write(MenuItem[i]);
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(x, y + i);
+                        Console.Write(MenuItem[i]);
+                    }
+                }
+
+                InputKey = Console.ReadKey(true);
+                if (InputKey.Key == ConsoleKey.Enter)
+                    break;
+                else if(InputKey.Key == ConsoleKey.UpArrow)
+                {
+                    MainMenuIndex--;
+                    if (MainMenuIndex < 0)
+                        MainMenuIndex = 0;
+                }
+                else if(InputKey.Key == ConsoleKey.DownArrow)
+                {
+                    MainMenuIndex--;
+                    if (MainMenuIndex == MenuItem.Length)
+                        MainMenuIndex = MenuItem.Length - 1;
+                }
+            }
+        }
+
+        static void PowerLine(bool Power)
+        {
+            if (Power)
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.SetCursorPosition(4, 17);
+                Console.Write("────────────");
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else
+            {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.SetCursorPosition(4, 17);
+                Console.Write("────────────");
+            }
         }
 
         static void Main(string[] args)
         {
+            Console.SetWindowSize(99, 36);
+            RiceCookerInfo RCInfo = new RiceCookerInfo(10000, 5000);
+            // SoundPlayer Sound = new SoundPlayer();
 
+            string[] MenuItem = { "   전원   ", "   뚜껑   ", "   취사   ", "   보온   ", "   취소   ", "   인원수   ", "   쌀   ", "   물   "  };
+
+            while (true)
+            {
+                OutFrame();
+                RiceBox(16, 11);
+                Cover(RCInfo.CoverOpenClose);
+                RiceInfo(RCInfo);
+                PowerLine(RCInfo.Power);
+                RiceHeight(50, 2, RCInfo.Rice);
+                WaterHeight(74, 2, RCInfo.Water);
+
+                Menu(65, 25, MenuItem);
+                if (MainMenuIndex == 9)
+                    break;
+
+                switch (MainMenuIndex)
+                {
+                    case 0: // 전원
+                        RCInfo.Power = !RCInfo.Power;
+                        if (RCInfo.Power)
+                        {
+                            // Sound.SoundLocation = "power_on.wav";
+                        }
+                        else
+                        {
+                            // Sound.SoundLocation = "power_off.wav";
+                        }
+                        // Sound.Load();
+                        // Sound.PlaySync();
+                        break;
+
+                    case 1: // 뚜껑, 취사 중에 뚜껑이 열리면 안된다.
+                        if(RCInfo.State == CookerProcess.Cooking)
+                        {
+                            MessageBox(51, 27, "취사 중 일때는 뚜껑을 열 수 없습니다.");
+                            Console.ReadKey(true);
+                        }
+                        else
+                        {
+                            RCInfo.CoverOpenClose = !RCInfo.CoverOpenClose;
+                            if (RCInfo.CoverOpenClose)
+                                // Sound.SoundLocation = "cover_open.wav";
+                                Console.Write("뚜껑이 열렸습니다.");
+                            else
+                                // Sound.SoundLocation = "cover_close.wav";
+                                // Sound.Load();
+                                // Sound.Play();
+                                Console.Write("뚜껑이 닫혔습니다.");
+
+                        }
+                        break;
+
+                    case 2: // 취사
+                        if (!RCInfo.Power)
+                        {
+                            // 배터리로 일부 메시지 전달
+                            MessageBox(51, 27, "전원이 꺼져 있습니다.");
+                            Console.ReadKey(true);
+                            break;
+                        }
+
+                        if (RCInfo.CoverOpenClose)
+                        {
+                            // 배터리로 일부 메시지 전달
+                            MessageBox(51, 27, "뚜껑이 열려저 있습니다.");
+                            Console.ReadKey(true);
+                            break;
+                        }
+
+                        if(RCInfo.Number == 0)
+                        {
+                            // 배터리로 일부 메시지 전달
+                            MessageBox(51, 27, "인원수를 입력해 주세요.");
+                            Console.ReadKey(true);
+                            break;
+                        }
+
+                        // 일정한 시간 간격으로 쌀 넣기 > 물 넣기 > 쌀 씻기 > 배수 > 2번 반복, 물 넣기부터 > 취사 > 완료 > 보온
+                        // 필요한 쌀과 물의 공급이 되어 있는지를 체크한다.
+                        int Rice = RCInfo.Rice - (RCInfo.Number * 160); // 쌀 일인분 160g
+                        if(Rice < 0)
+                        {
+                            MessageBox(51, 27, "   ??? 쌀 부족 ???   ");
+                            // Sound.SoundLocation = "쌀을보충해주세요.WAV";
+                            // Sound.Load();
+                            // Sound.Play();
+                            Console.ReadKey(true);
+                            break;
+                        }
+
+                        // 물통에서 물 빼기 (대략 인원수 * 170ml) * 5;
+                        // 물로 씻는 거 2번 취사 1번 총 3번 양이 필요
+                        // 씻을 때는 1인분 물 170의 두 배 사용. 필요한 물은 씻기 2번(170 * 4ml) 취사 1번(170ml)
+                        int Water;
+                        Water = RCInfo.Water - (RCInfo.Number * 170) * 5;
+                        if(Water < 0)
+                        {
+                            MessageBox(51, 27, "   ??? 물 부족 ???   ");
+                            // Sound.SoundLocation = "물보충.WAV";
+                            // Sound.Load();
+                            // Sound.Play();
+                            Console.ReadKey(true);
+                            break;
+                        }
+
+                        // Note: 취사 시작 부분, 쌀 넣기 > 물 넣기 > 쌀 씻기 > 배수 > 취사 > 보온
+                        RCInfo.State = CookerProcess.Riceing;
+                        RiceInfo(RCInfo);
+
+                        // Sound.SoundLocation = "쌀넣기.WAV";
+                        // Sound.Load();
+                        // Sound.Play();
+
+                        Console.SetCursorPosition(24, 12);
+                        Console.Write("쌀 넣기");
+                        Console.SetCursorPosition(18, 13);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 14);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 15);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 16);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 17);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        RCInfo.Rice = RCInfo.Rice - (RCInfo.Number * 160); // 1인분 160g
+                        RiceHeight(50, 2, RCInfo.Rice);
+                        Thread.Sleep(3000); // 3초 정도
+
+                        for (int i = 0; i < 2; i++)
+                        {
+                            // Note: 물 넣기 > 파란 색 보여주기
+                            RCInfo.State = CookerProcess.Watering;
+                            RCInfo.Water = RCInfo.Water - (RCInfo.Number * 170 * 2);
+                            RiceInfo(RCInfo);
+
+                            // Sound.SoundLocation = "water_in.WAV";
+                            // Sound.Load();
+                            // Sound.Play();
+
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.SetCursorPosition(24, 12);
+                            Console.Write("물 넣기");
+                            Console.BackgroundColor = ConsoleColor.Blue;
+                            Console.SetCursorPosition(18, 13);
+                            Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                            Console.SetCursorPosition(18, 14);
+                            Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                            Console.SetCursorPosition(18, 15);
+                            Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                            Console.SetCursorPosition(18, 16);
+                            Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                            Console.SetCursorPosition(18, 17);
+                            Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                            WaterHeight(74, 2, RCInfo.Water);
+                            Thread.Sleep(3000); // 3초 정도
+
+                            // Note: 쌀 씻기
+                            // Sound.SoundLocation = "쌀씻기.wav";
+                            // Sound.Load();
+                            // Sound.Play();
+                            RCInfo.State = CookerProcess.Washing;
+                            RiceInfo(RCInfo);
+
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.SetCursorPosition(24, 12);
+                            Console.Write("쌀 씻기");
+                            Console.BackgroundColor = ConsoleColor.Blue;
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.SetCursorPosition(18, 13);
+                            Console.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~");
+                            Console.SetCursorPosition(18, 14);
+                            Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                            Console.SetCursorPosition(18, 15);
+                            Console.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~");
+                            Console.SetCursorPosition(18, 16);
+                            Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                            Console.SetCursorPosition(18, 17);
+                            Console.Write("~ ~ ~ ~ ~ ~ ~ ~ ~ ~");
+                            Thread.Sleep(3000); // 3초 정도
+
+                            // Note: 물 배수
+                            RCInfo.State = CookerProcess.Droping;
+                            RiceInfo(RCInfo);
+
+                            // Sound.SoundLocation = "water_out.WAV";
+                            // Sound.Load();
+                            // Sound.Play();
+
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.SetCursorPosition(24, 12);
+                            Console.Write(" 배수 ");
+                            for(int j = 0; j < 5; j++)
+                            {
+                                // 지우기
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                for (int k = 0; k < j; k++)
+                                {
+                                    Console.SetCursorPosition(18, 13 + k);
+                                    Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                                }
+
+                                // 물 출력
+                                Console.BackgroundColor = ConsoleColor.Blue;
+                                for (int k = j; k < 5; k++)
+                                {
+                                    Console.SetCursorPosition(18, 13 + k);
+                                    Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                                }
+                                Thread.Sleep(700);
+                            }
+                        }
+
+                        // Note: 취사용 물 공급
+                        RCInfo.Water = RCInfo.Water - (RCInfo.Number * 170);
+                        WaterHeight(74, 2, RCInfo.Water);
+                        RiceInfo(RCInfo);
+
+                        // Note: 취사 시작
+                        RCInfo.State = CookerProcess.Cooking;
+                        RiceInfo(RCInfo);
+
+                        // Sound.SoundLocation = "rice.wav";
+                        // Sound.Load();
+                        // Sound.Play();
+
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(24, 12);
+                        Console.Write("취사 중");
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.SetCursorPosition(18, 13);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 14);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 15);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 16);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 17);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Thread.Sleep(7000); // 7초 정도
+
+                        // Note: 완료 , 사운드 삐리릭...
+                        RCInfo.State = CookerProcess.Completion;
+                        RiceInfo(RCInfo);
+                        // Sound.SoundLocation = "Ring10.wav";
+                        // Sound.Load();
+                        // Sound.Play();
+                        Thread.Sleep(7000); // 3초 정도
+
+                        // Sound.SoundLocation = "밥완료.wav";
+                        // Sound.Load();
+                        // Sound.Play();
+
+                        Console.SetCursorPosition(24, 12);
+                        Console.Write("취사 완료");
+                        Thread.Sleep(3000); // 3초 정도
+
+                        // Note: 보온
+                        RCInfo.State = CookerProcess.Keeping;
+                        RiceInfo(RCInfo);
+
+                        // Sound.SoundLocation = "맛있게드세요.wav";
+                        // Sound.Load();
+                        // Sound.Play();
+
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(24, 12);
+                        Console.Write("보온 중  ");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.SetCursorPosition(18, 13);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 14);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 15);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 16);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Console.SetCursorPosition(18, 17);
+                        Console.Write("⊙ ⊙ ⊙ ⊙ ⊙ ⊙ ⊙");
+                        Thread.Sleep(3000); // 3초 정도
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        RCInfo.Number = 0; // Note: 인원수 초기화
+                        break;
+
+                    case 3: // Note: 보온
+                        if (!RCInfo.Power)
+                        {
+                            // 배터리로 일부 메시지 전달
+                            MessageBox(51, 27, "전원이 꺼져 있습니다.");
+                            Console.ReadKey(true);
+                            break;
+                        }
+
+                        RCInfo.State = CookerProcess.Keeping;
+                        RiceInfo(RCInfo);
+                        break;
+
+                    case 4: // 취소
+                        RCInfo.State = CookerProcess.None;
+                        RiceInfo(RCInfo);
+                        break;
+
+                    case 5: // 인원수
+                        if (!RCInfo.Power)
+                        {
+                            // 배터리로 일부 메시지 전달
+                            MessageBox(51, 27, "전원이 꺼져 있습니다.");
+                            Console.ReadKey(true);
+                            break;
+                        }
+
+                        MessageBox(51, 27, " 식사할 인원 수 : ");
+                        try
+                        {
+                            RCInfo.Number = int.Parse(Console.ReadLine());
+                        }
+                        catch(Exception e)
+                        {
+                            RCInfo.Number = 0;
+                        }
+                        break;
+
+                    case 6: // 쌀통 설정
+                        {
+                            string Message = "현재 쌀의 양(kg) : " + (RCInfo.Rice / 1000);
+                            MessageBox(51, 27, Message);
+                            Console.SetCursorPosition(63, 29);
+                            Console.Write("추가할 쌀의 양(kg) : ");
+                            string Amount = Console.ReadLine();
+                            try
+                            {
+                                RCInfo.Rice += int.Parse(Amount) * 1000; // kg 단위
+                                if(RCInfo.Rice > 18000) // 18kg 최대
+                                {
+                                    RCInfo.Rice -= int.Parse(Amount) * 1000;
+                                    MessageBox(51, 27, "양이 너무 많습니다.");
+                                    Console.ReadKey(true);
+                                    break;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                break;
+                            }
+                        }
+                        break;
+
+                    case 7: // 물통 설정
+                        {
+                            string Message = "현재 물의 양(리터) : " + (RCInfo.Water / 1000);
+                            MessageBox(51, 27, Message);
+                            string Amount = string.Empty;
+                            Console.SetCursorPosition(63, 29);
+                            Console.Write("추가할 물의 양(리터) : ");
+                            Amount = Console.ReadLine();
+                            try
+                            {
+                                RCInfo.Water += int.Parse(Amount) * 1000; // 리터를 밀리리터로 
+                                if (RCInfo.Water > 18000)
+                                {
+                                    RCInfo.Water -= int.Parse(Amount) * 1000;
+                                    MessageBox(51, 27, "양이 너무 많습니다");
+                                    Console.ReadKey(true);
+                                    break;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                break;
+                            }
+                        }
+                        break;
+                }
+            }
         }
     }
 }
